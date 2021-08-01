@@ -26,30 +26,30 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>'use strict'
-/**
+            <pre class="prettyprint source linenums"><code>/**
  * @module
  */
 
-const path = require('path')
-const url = require('url')
+import path from 'path'
+import url, { fileURLToPath } from 'url'
+import { bootstrap } from 'global-agent'
+import cloudflareMiddleware from 'cloudflare-middleware'
+import bytes from 'bytes'
+import Camp from '@shields_io/camp'
+import originalJoi from 'joi'
+import makeBadge from '../../badge-maker/lib/make-badge.js'
+import GithubConstellation from '../../services/github/github-constellation.js'
+import { setRoutes } from '../../services/suggest.js'
+import { loadServiceClasses } from '../base-service/loader.js'
+import { makeSend } from '../base-service/legacy-result-sender.js'
+import { handleRequest } from '../base-service/legacy-request-handler.js'
+import { clearRegularUpdateCache } from '../legacy/regular-update.js'
+import { rasterRedirectUrl } from '../badge-urls/make-badge-url.js'
+import { nonNegativeInteger } from '../../services/validators.js'
+import log from './log.js'
+import PrometheusMetrics from './prometheus-metrics.js'
+import InfluxMetrics from './influx-metrics.js'
 const { URL } = url
-const cloudflareMiddleware = require('cloudflare-middleware')
-const bytes = require('bytes')
-const Camp = require('@shields_io/camp')
-const originalJoi = require('joi')
-const makeBadge = require('../../badge-maker/lib/make-badge')
-const GithubConstellation = require('../../services/github/github-constellation')
-const suggest = require('../../services/suggest')
-const { loadServiceClasses } = require('../base-service/loader')
-const { makeSend } = require('../base-service/legacy-result-sender')
-const { handleRequest } = require('../base-service/legacy-request-handler')
-const { clearRegularUpdateCache } = require('../legacy/regular-update')
-const { rasterRedirectUrl } = require('../badge-urls/make-badge-url')
-const log = require('./log')
-const sysMonitor = require('./monitor')
-const PrometheusMetrics = require('./prometheus-metrics')
-const InfluxMetrics = require('./influx-metrics')
 
 const Joi = originalJoi
   .extend(base => ({
@@ -163,24 +163,27 @@ const publicConfigSchema = Joi.object({
     npm: defaultService,
     sonar: defaultService,
     teamcity: defaultService,
+    weblate: defaultService,
     trace: Joi.boolean().required(),
   }).required(),
-  cacheHeaders: {
-    defaultCacheLengthSeconds: Joi.number().integer().required(),
-  },
-  rateLimit: Joi.boolean().required(),
+  cacheHeaders: { defaultCacheLengthSeconds: nonNegativeInteger },
   handleInternalErrors: Joi.boolean().required(),
   fetchLimit: Joi.string().regex(/^[0-9]+(b|kb|mb|gb|tb)$/i),
+  requestTimeoutSeconds: nonNegativeInteger,
+  requestTimeoutMaxAgeSeconds: nonNegativeInteger,
   documentRoot: Joi.string().default(
-    path.resolve(__dirname, '..', '..', 'public')
+    path.resolve(
+      path.dirname(fileURLToPath(import.meta.url)),
+      '..',
+      '..',
+      'public'
+    )
   ),
   requireCloudflare: Joi.boolean().required(),
 }).required()
 
 const privateConfigSchema = Joi.object({
   azure_devops_token: Joi.string(),
-  bintray_user: Joi.string(),
-  bintray_apikey: Joi.string(),
   discord_bot_token: Joi.string(),
   drone_token: Joi.string(),
   gh_client_id: Joi.string(),
@@ -208,6 +211,7 @@ const privateConfigSchema = Joi.object({
   wheelmap_token: Joi.string(),
   influx_username: Joi.string(),
   influx_password: Joi.string(),
+  weblate_api_key: Joi.string(),
   youtube_api_key: Joi.string(),
 }).required()
 const privateMetricsInfluxConfigSchema = privateConfigSchema.append({
@@ -430,11 +434,11 @@ class Server {
    * Iterate all the service classes defined in /services,
    * load each service and register a Scoutcamp route for each service.
    */
-  registerServices() {
+  async registerServices() {
     const { config, camp, metricInstance } = this
     const { apiProvider: githubApiProvider } = this.githubConstellation
 
-    loadServiceClasses().forEach(serviceClass =>
+    ;(await loadServiceClasses()).forEach(serviceClass =>
       serviceClass.register(
         { camp, handleRequest, githubApiProvider, metricInstance },
         {
@@ -449,6 +453,25 @@ class Server {
     )
   }
 
+  bootstrapAgent() {
+    /*
+    Bootstrap global agent.
+    This allows self-hosting users to configure a proxy with
+    HTTP_PROXY, HTTPS_PROXY, NO_PROXY variables
+    */
+    if (!('GLOBAL_AGENT_ENVIRONMENT_VARIABLE_NAMESPACE' in process.env)) {
+      process.env.GLOBAL_AGENT_ENVIRONMENT_VARIABLE_NAMESPACE = ''
+    }
+
+    const proxyPrefix = process.env.GLOBAL_AGENT_ENVIRONMENT_VARIABLE_NAMESPACE
+    const HTTP_PROXY = process.env[`${proxyPrefix}HTTP_PROXY`] || null
+    const HTTPS_PROXY = process.env[`${proxyPrefix}HTTPS_PROXY`] || null
+
+    if (HTTP_PROXY || HTTPS_PROXY) {
+      bootstrap()
+    }
+  }
+
   /**
    * Start the HTTP server:
    * Bootstrap Scoutcamp,
@@ -460,11 +483,12 @@ class Server {
       bind: { port, address: hostname },
       ssl: { isSecure: secure, cert, key },
       cors: { allowedOrigin },
-      rateLimit,
       requireCloudflare,
     } = this.config.public
 
-    log(`Server is starting up: ${this.baseUrl}`)
+    this.bootstrapAgent()
+
+    log.log(`Server is starting up: ${this.baseUrl}`)
 
     const camp = (this.camp = Camp.create({
       documentRoot: this.config.public.documentRoot,
@@ -480,13 +504,7 @@ class Server {
       this.requireCloudflare()
     }
 
-    const { metricInstance } = this
-    this.cleanupMonitor = sysMonitor.setRoutes(
-      { rateLimit },
-      { server: camp, metricInstance }
-    )
-
-    const { githubConstellation } = this
+    const { githubConstellation, metricInstance } = this
     await githubConstellation.initialize(camp)
     if (metricInstance) {
       if (this.config.public.metrics.prometheus.endpointEnabled) {
@@ -498,12 +516,25 @@ class Server {
     }
 
     const { apiProvider: githubApiProvider } = this.githubConstellation
-    suggest.setRoutes(allowedOrigin, githubApiProvider, camp)
+    setRoutes(allowedOrigin, githubApiProvider, camp)
 
     this.registerErrorHandlers()
     this.registerRedirects()
-    this.registerServices()
+    await this.registerServices()
 
+    camp.timeout = this.config.public.requestTimeoutSeconds * 1000
+    if (this.config.public.requestTimeoutSeconds > 0) {
+      camp.on('timeout', socket => {
+        const maxAge = this.config.public.requestTimeoutMaxAgeSeconds
+        socket.write('HTTP/1.1 408 Request Timeout\r\n')
+        socket.write('Content-Type: text/html; charset=UTF-8\r\n')
+        socket.write('Content-Encoding: UTF-8\r\n')
+        socket.write(`Cache-Control: max-age=${maxAge}, s-maxage=${maxAge}\r\n`)
+        socket.write('Connection: close\r\n\r\n')
+        socket.write('Request Timeout')
+        socket.end()
+      })
+    }
     camp.listenAsConfigured()
 
     await new Promise(resolve => camp.on('listening', () => resolve()))
@@ -547,7 +578,7 @@ class Server {
   }
 }
 
-module.exports = Server
+export default Server
 </code></pre>
         </article>
     </section>
@@ -558,13 +589,13 @@ module.exports = Server
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-badge-maker.html">badge-maker</a></li><li><a href="module-core_base-service_base.html">core/base-service/base</a></li><li><a href="module-core_base-service_base-graphql.html">core/base-service/base-graphql</a></li><li><a href="module-core_base-service_base-json.html">core/base-service/base-json</a></li><li><a href="module-core_base-service_base-svg-scraping.html">core/base-service/base-svg-scraping</a></li><li><a href="module-core_base-service_base-xml.html">core/base-service/base-xml</a></li><li><a href="module-core_base-service_base-yaml.html">core/base-service/base-yaml</a></li><li><a href="module-core_base-service_errors.html">core/base-service/errors</a></li><li><a href="module-core_base-service_graphql.html">core/base-service/graphql</a></li><li><a href="module-core_server_server.html">core/server/server</a></li><li><a href="module-core_service-test-runner_create-service-tester.html">core/service-test-runner/create-service-tester</a></li><li><a href="module-core_service-test-runner_icedfrisby-shields.html">core/service-test-runner/icedfrisby-shields</a></li><li><a href="module-core_service-test-runner_infer-pull-request.html">core/service-test-runner/infer-pull-request</a></li><li><a href="module-core_service-test-runner_runner.html">core/service-test-runner/runner</a></li><li><a href="module-core_service-test-runner_service-tester.html">core/service-test-runner/service-tester</a></li><li><a href="module-core_service-test-runner_services-for-title.html">core/service-test-runner/services-for-title</a></li><li><a href="module-core_token-pooling_token-pool.html">core/token-pooling/token-pool</a></li><li><a href="module-services_dynamic_json-path.html">services/dynamic/json-path</a></li><li><a href="module-services_steam_steam-base.html">services/steam/steam-base</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li><li><a href="module-core_base-service_base-graphql-BaseGraphqlService.html">BaseGraphqlService</a></li><li><a href="module-core_base-service_base-json-BaseJsonService.html">BaseJsonService</a></li><li><a href="module-core_base-service_base-svg-scraping-BaseSvgScrapingService.html">BaseSvgScrapingService</a></li><li><a href="module-core_base-service_base-xml-BaseXmlService.html">BaseXmlService</a></li><li><a href="module-core_base-service_base-yaml-BaseYamlService.html">BaseYamlService</a></li><li><a href="module-core_base-service_base-BaseService.html">BaseService</a></li><li><a href="module-core_base-service_errors-Deprecated.html">Deprecated</a></li><li><a href="module-core_base-service_errors-ImproperlyConfigured.html">ImproperlyConfigured</a></li><li><a href="module-core_base-service_errors-Inaccessible.html">Inaccessible</a></li><li><a href="module-core_base-service_errors-InvalidParameter.html">InvalidParameter</a></li><li><a href="module-core_base-service_errors-InvalidResponse.html">InvalidResponse</a></li><li><a href="module-core_base-service_errors-NotFound.html">NotFound</a></li><li><a href="module-core_base-service_errors-ShieldsRuntimeError.html">ShieldsRuntimeError</a></li><li><a href="module-core_server_server-Server.html">Server</a></li><li><a href="module-core_service-test-runner_runner-Runner.html">Runner</a></li><li><a href="module-core_service-test-runner_service-tester-ServiceTester.html">ServiceTester</a></li><li><a href="module-core_token-pooling_token-pool-Token.html">Token</a></li><li><a href="module-core_token-pooling_token-pool-TokenPool.html">TokenPool</a></li><li><a href="module-services_steam_steam-base-BaseSteamAPI.html">BaseSteamAPI</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-TUTORIAL.html">TUTORIAL</a></li><li><a href="tutorial-badge-urls.html">badge-urls</a></li><li><a href="tutorial-code-walkthrough.html">code-walkthrough</a></li><li><a href="tutorial-deprecating-badges.html">deprecating-badges</a></li><li><a href="tutorial-input-validation.html">input-validation</a></li><li><a href="tutorial-json-format.html">json-format</a></li><li><a href="tutorial-logos.html">logos</a></li><li><a href="tutorial-performance-testing.html">performance-testing</a></li><li><a href="tutorial-production-hosting.html">production-hosting</a></li><li><a href="tutorial-rewriting-services.html">rewriting-services</a></li><li><a href="tutorial-self-hosting.html">self-hosting</a></li><li><a href="tutorial-server-secrets.html">server-secrets</a></li><li><a href="tutorial-service-tests.html">service-tests</a></li><li><a href="tutorial-users.html">users</a></li></ul><h3>Global</h3><ul><li><a href="global.html#validateAffiliations">validateAffiliations</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-badge-maker.html">badge-maker</a></li><li><a href="module-badge-maker_lib_xml.html">badge-maker/lib/xml</a></li><li><a href="module-core_base-service_base.html">core/base-service/base</a></li><li><a href="module-core_base-service_base-graphql.html">core/base-service/base-graphql</a></li><li><a href="module-core_base-service_base-json.html">core/base-service/base-json</a></li><li><a href="module-core_base-service_base-svg-scraping.html">core/base-service/base-svg-scraping</a></li><li><a href="module-core_base-service_base-xml.html">core/base-service/base-xml</a></li><li><a href="module-core_base-service_base-yaml.html">core/base-service/base-yaml</a></li><li><a href="module-core_base-service_errors.html">core/base-service/errors</a></li><li><a href="module-core_base-service_graphql.html">core/base-service/graphql</a></li><li><a href="module-core_server_server.html">core/server/server</a></li><li><a href="module-core_service-test-runner_create-service-tester.html">core/service-test-runner/create-service-tester</a></li><li><a href="module-core_service-test-runner_icedfrisby-shields.html">core/service-test-runner/icedfrisby-shields</a></li><li><a href="module-core_service-test-runner_infer-pull-request.html">core/service-test-runner/infer-pull-request</a></li><li><a href="module-core_service-test-runner_runner.html">core/service-test-runner/runner</a></li><li><a href="module-core_service-test-runner_service-tester.html">core/service-test-runner/service-tester</a></li><li><a href="module-core_service-test-runner_services-for-title.html">core/service-test-runner/services-for-title</a></li><li><a href="module-core_token-pooling_token-pool.html">core/token-pooling/token-pool</a></li><li><a href="module-services_dynamic_json-path.html">services/dynamic/json-path</a></li><li><a href="module-services_steam_steam-base.html">services/steam/steam-base</a></li></ul><h3>Classes</h3><ul><li><a href="module-badge-maker_lib_xml-XmlElement.html">XmlElement</a></li><li><a href="module-core_base-service_base-graphql-BaseGraphqlService.html">BaseGraphqlService</a></li><li><a href="module-core_base-service_base-json-BaseJsonService.html">BaseJsonService</a></li><li><a href="module-core_base-service_base-svg-scraping-BaseSvgScrapingService.html">BaseSvgScrapingService</a></li><li><a href="module-core_base-service_base-xml-BaseXmlService.html">BaseXmlService</a></li><li><a href="module-core_base-service_base-yaml-BaseYamlService.html">BaseYamlService</a></li><li><a href="module-core_base-service_base-BaseService.html">BaseService</a></li><li><a href="module-core_base-service_errors-Deprecated.html">Deprecated</a></li><li><a href="module-core_base-service_errors-ImproperlyConfigured.html">ImproperlyConfigured</a></li><li><a href="module-core_base-service_errors-Inaccessible.html">Inaccessible</a></li><li><a href="module-core_base-service_errors-InvalidParameter.html">InvalidParameter</a></li><li><a href="module-core_base-service_errors-InvalidResponse.html">InvalidResponse</a></li><li><a href="module-core_base-service_errors-NotFound.html">NotFound</a></li><li><a href="module-core_base-service_errors-ShieldsRuntimeError.html">ShieldsRuntimeError</a></li><li><a href="module-core_server_server-Server.html">Server</a></li><li><a href="module-core_service-test-runner_runner-Runner.html">Runner</a></li><li><a href="module-core_service-test-runner_service-tester-ServiceTester.html">ServiceTester</a></li><li><a href="module-core_token-pooling_token-pool-Token.html">Token</a></li><li><a href="module-core_token-pooling_token-pool-TokenPool.html">TokenPool</a></li><li><a href="module-services_steam_steam-base-BaseSteamAPI.html">BaseSteamAPI</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-TUTORIAL.html">TUTORIAL</a></li><li><a href="tutorial-badge-urls.html">badge-urls</a></li><li><a href="tutorial-code-walkthrough.html">code-walkthrough</a></li><li><a href="tutorial-deprecating-badges.html">deprecating-badges</a></li><li><a href="tutorial-input-validation.html">input-validation</a></li><li><a href="tutorial-json-format.html">json-format</a></li><li><a href="tutorial-logos.html">logos</a></li><li><a href="tutorial-performance-testing.html">performance-testing</a></li><li><a href="tutorial-production-hosting.html">production-hosting</a></li><li><a href="tutorial-releases.html">releases</a></li><li><a href="tutorial-self-hosting.html">self-hosting</a></li><li><a href="tutorial-server-secrets.html">server-secrets</a></li><li><a href="tutorial-service-tests.html">service-tests</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createNumRequestCounter">createNumRequestCounter</a></li><li><a href="global.html#isMetricWithPattern">isMetricWithPattern</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Mon Feb 08 2021 20:00:01 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Aug 01 2021 00:30:08 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
