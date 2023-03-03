@@ -154,7 +154,7 @@
     "@types/react-helmet": "^6.1.2",
     "@types/react-modal": "^3.12.1",
     "@types/react-select": "^4.0.17",
-    "@types/styled-components": "5.1.14",
+    "@types/styled-components": "5.1.26",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.30.0",
     "babel-plugin-inline-react-svg": "^2.0.1",
@@ -235,7 +235,7 @@
     "sinon-chai": "^3.7.0",
     "snap-shot-it": "^7.9.6",
     "start-server-and-test": "1.14.0",
-    "styled-components": "^5.3.1",
+    "styled-components": "^5.3.8",
     "ts-mocha": "^8.0.0",
     "tsd": "^0.17.0",
     "typescript": "^4.4.2"
