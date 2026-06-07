@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: core/service-test-runner/services-for-title</title>
+    <title>JSDoc: Source: core/base-service/trace.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,260 +17,77 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: core/service-test-runner/services-for-title</h1>
+    <h1 class="page-title">Source: core/base-service/trace.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_service-test-runner_services-for-title.js.html">core/service-test-runner/services-for-title.js</a>, <a href="core_service-test-runner_services-for-title.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~servicesForTitle"><span class="type-signature">(inner) </span>servicesForTitle<span class="signature">(title)</span><span class="type-signature"> &rarr; {Array.&lt;string>}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Given a pull request title like
-'[Travis Sonar] Support user token authentication'
-extract the list of service names in square brackets
-as an array of strings.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>title</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Pull Request title</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_service-test-runner_services-for-title.js.html">core/service-test-runner/services-for-title.js</a>, <a href="core_service-test-runner_services-for-title.js.html#line14">line 14</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>Array of service names</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array.&lt;string></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import chalk from 'chalk'
+import config from 'config'
+const objectConfig = config.util.toObject()
+
+// Config is loaded globally but it would be better to inject it. To do that,
+// there needs to be one instance of the service created at registration time,
+// which gets the config injected into it, instead of one instance per request.
+// That way most of the current static methods could become instance methods,
+// thereby gaining access to the injected config.
+const {
+  services: { trace: enableTraceLogging },
+} = objectConfig.public
+
+/**
+ * Formats a stage label with a coloured background for console output.
+ *
+ * @param {'inbound'|'fetch'|'validate'|'unhandledError'|'outbound'} stage - Pipeline stage name.
+ * @param {string} label - Text to display inside the coloured badge.
+ * @returns {string} ANSI-coloured label string.
+ */
+function _formatLabelForStage(stage, label) {
+  const colorFn = {
+    inbound: chalk.black.bgBlue,
+    fetch: chalk.black.bgYellow,
+    validate: chalk.black.bgGreen,
+    unhandledError: chalk.white.bgRed,
+    outbound: chalk.black.bgBlue,
+  }[stage]
+  return colorFn(` ${label} `)
+}
+
+/**
+ * Logs a trace message to the console when trace logging is enabled in config.
+ *
+ * @param {'inbound'|'fetch'|'validate'|'unhandledError'|'outbound'} stage - Pipeline stage used to colour the label.
+ * @param {string} symbol - Short symbol or emoji prefixed to the log line.
+ * @param {string} label - Descriptive label shown alongside the symbol.
+ * @param {*} content - Data to print; logged with `console.dir` when `deep` is true.
+ * @param {object} [options={}] - Optional logging configuration.
+ * @param {boolean} [options.deep=false] - When `true`, uses `console.dir` for full-depth output.
+ * @returns {boolean} `true` if the message was logged, `false` when trace logging is disabled.
+ */
+function logTrace(stage, symbol, label, content, { deep = false } = {}) {
+  if (enableTraceLogging) {
+    if (deep) {
+      console.log(_formatLabelForStage(stage, label), symbol)
+      console.dir(content, { depth: null })
+    } else {
+      console.log(_formatLabelForStage(stage, label), symbol, '\n', content)
+    }
+    return true
+  } else {
+    return false
+  }
+}
+
+export default {
+  logTrace,
+}
+</code></pre>
+        </article>
+    </section>
 
 
 
@@ -284,7 +101,7 @@ as an array of strings.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Sun Jun 07 2026 16:34:57 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Sun Jun 07 2026 16:34:56 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
