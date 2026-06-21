@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: services/package-json-helpers</title>
+    <title>JSDoc: Source: core/base-service/coalesce-badge.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,632 +17,206 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: services/package-json-helpers</h1>
-
-    
-
-
-
-
-<section>
-
-<header>
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>Common functions and utilities for tasks related to package.json</p></div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_package-json-helpers.js.html">services/package-json-helpers.js</a>, <a href="services_package-json-helpers.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<h4 class="name" id="~isDependencyMap"><span class="type-signature">(inner, constant) </span>isDependencyMap<span class="type-signature"> :Joi</span></h4>
-
-
-
-
-<div class="description">
-    <p>Joi schema for validating dependency map.</p>
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Joi</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_package-json-helpers.js.html">services/package-json-helpers.js</a>, <a href="services_package-json-helpers.js.html#line15">line 15</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="~isPackageJsonWithDependencies"><span class="type-signature">(inner, constant) </span>isPackageJsonWithDependencies<span class="type-signature"> :Joi</span></h4>
-
-
-
-
-<div class="description">
-    <p>Joi schema for validating package json object.
-Checks if the object has all the dependency types and the dependency types are valid.</p>
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Joi</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_package-json-helpers.js.html">services/package-json-helpers.js</a>, <a href="services_package-json-helpers.js.html#line29">line 29</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~getDependencyVersion"><span class="type-signature">(inner) </span>getDependencyVersion<span class="signature">(attrs)</span><span class="type-signature"> &rarr; {string}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Determines the dependency version based on the dependency type.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>attrs</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Refer to individual attributes</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>kind</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Wanted dependency type, defaults to prod</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>wantedDependency</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Name of the wanted dependency</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>dependencies</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Map of dependencies</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>devDependencies</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Map of dev dependencies</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>peerDependencies</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Map of peer dependencies</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>optionalDependencies</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Map of optional dependencies</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_package-json-helpers.js.html">services/package-json-helpers.js</a>, <a href="services_package-json-helpers.js.html#line50">line 50</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Throws:</h5>
-<ul>
-        <li>
-
-<dl>
-    <dt>
-        <div class="param-desc">
-        <ul>
-<li>Error message if unknown dependency type provided</li>
-</ul>
-        </div>
-    </dt>
-    <dd></dd>
-    <dt>
-        <dl>
-            <dt>
-                Type
-            </dt>
-            <dd>
-                
-<span class="param-type">string</span>
-
-
-            </dd>
-        </dl>
-    </dt>
-    <dd></dd>
-</dl>
-
-</li>
-    
-        <li>
-
-<dl>
-    <dt>
-        <div class="param-desc">
-        <ul>
-<li>Error if wanted dependency is not present</li>
-</ul>
-        </div>
-    </dt>
-    <dd></dd>
-    <dt>
-        <dl>
-            <dt>
-                Type
-            </dt>
-            <dd>
-                
-<span class="param-type">InvalidParameter</span>
-
-
-            </dd>
-        </dl>
-    </dt>
-    <dd></dd>
-</dl>
-
-</li>
-    </ul>
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>Semver range of the wanted dependency (eg. ~2.1.6 or &gt;=3.0.0 or &lt;4.0.0)</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <h1 class="page-title">Source: core/base-service/coalesce-badge.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {
+  decodeDataUrlFromQueryParam,
+  prepareNamedLogo,
+} from '../../lib/logos.js'
+import { svg2base64, getIconSize } from '../../lib/svg-helpers.js'
+import { DEFAULT_LOGO_HEIGHT } from '../../badge-maker/lib/constants.js'
+import coalesce from './coalesce.js'
+import toArray from './to-array.js'
+
+/**
+ * Translate modern badge data to the legacy schema understood by the badge
+ * maker. Allows the user to override label, color, logo, etc. through the
+ * query string. Provides support for most badge options via `serviceData` so
+ * the Endpoint badge can specify logos and colors, though the user's logo or
+ * color takes precedence. A notable exception: when the service specifies an
+ * error, the user's color override is disregarded.
+ *
+ * Logos are resolved in this precedence order:
+ *
+ * 1. `?logo=` query param (named simple-icons logo or base64-encoded SVG).
+ * 2. Dynamic logo returned by the service (Endpoint badge only).
+ * 3. Service's default logo (social style only).
+ *
+ * @param {object} overrides - Query-string override values (style, label,
+ *    logo, color, etc.).
+ * @param {object} serviceData - Badge data from the service (message, color,
+ *    logo, cache seconds, etc.).
+ * @param {object} defaultBadgeData - Default badge values (color, label,
+ *    named logo).
+ * @param {object} [context] - Optional context including category and cache
+ *    length.
+ * @param {string} [context.category] - Badge category for the default label.
+ * @param {number} [context._cacheLength] - Default cache duration in seconds.
+ * @returns {object} Normalized badge data object ready for rendering.
+ */
+export default function coalesceBadge(
+  overrides,
+  serviceData,
+  // These two parameters were kept separate to make tests clearer.
+  defaultBadgeData,
+  { category, _cacheLength: defaultCacheSeconds } = {},
+) {
+  // The "overrideX" naming is based on services that provide badge
+  // parameters themselves, which can be overridden by a query string
+  // parameter. (For a couple services, the dynamic badge and the
+  // query-string-based static badge, the service never sets a value
+  // so the query string overrides are the _only_ way to configure
+  // these badge parameters.
+  const {
+    style: overrideStyle,
+    label: overrideLabel,
+    logo: overrideLogo,
+    logoColor: overrideLogoColor,
+    logoSize: overrideLogoSize,
+    link: overrideLink,
+    colorB: legacyOverrideColor,
+    colorA: legacyOverrideLabelColor,
+  } = overrides
+  let { color: overrideColor, labelColor: overrideLabelColor } = overrides
+
+  // Only use the legacy properties if the new ones are not provided
+  if (typeof overrideColor === 'undefined') {
+    overrideColor = legacyOverrideColor
+  }
+  if (typeof overrideLabelColor === 'undefined') {
+    overrideLabelColor = legacyOverrideLabelColor
+  }
+
+  // Scoutcamp converts numeric query params to numbers. Convert them back.
+  if (typeof overrideColor === 'number') {
+    overrideColor = `${overrideColor}`
+  }
+  if (typeof overrideLabelColor === 'number') {
+    overrideLabelColor = `${overrideLabelColor}`
+  }
+
+  const {
+    isError,
+    label: serviceLabel,
+    message: serviceMessage,
+    color: serviceColor,
+    labelColor: serviceLabelColor,
+    logoSvg: serviceLogoSvg,
+    namedLogo: serviceNamedLogo,
+    logoColor: serviceLogoColor,
+    logoSize: serviceLogoSize,
+    link: serviceLink,
+    cacheSeconds: serviceCacheSeconds,
+    style: serviceStyle,
+  } = serviceData
+
+  const {
+    color: defaultColor,
+    namedLogo: defaultNamedLogo,
+    label: defaultLabel,
+    labelColor: defaultLabelColor,
+  } = defaultBadgeData
+
+  let style = coalesce(overrideStyle, serviceStyle)
+  const styleValues = [
+    'plastic',
+    'flat',
+    'flat-square',
+    'for-the-badge',
+    'social',
+  ]
+  if (!styleValues.includes(style)) {
+    style = 'flat'
+  }
+
+  let namedLogo, namedLogoColor, logoSize, logoWidth, logoSvgBase64
+  if (overrideLogo) {
+    // `?logo=` could be a named logo or encoded svg.
+    const overrideLogoSvgBase64 = decodeDataUrlFromQueryParam(overrideLogo)
+    if (overrideLogoSvgBase64) {
+      logoSvgBase64 = overrideLogoSvgBase64
+    } else {
+      namedLogo = overrideLogo
+      // If the logo has been overridden it does not make sense to inherit the
+      // original color.
+      namedLogoColor = overrideLogoColor
+    }
+    // If the logo has been overridden it does not make sense to inherit the
+    // original width or position.
+    logoSize = overrideLogoSize
+  } else {
+    if (serviceLogoSvg) {
+      logoSvgBase64 = svg2base64(serviceLogoSvg)
+    } else {
+      namedLogo = coalesce(
+        serviceNamedLogo,
+        style === 'social' ? defaultNamedLogo : undefined,
+      )
+      namedLogoColor = coalesce(overrideLogoColor, serviceLogoColor)
+    }
+    logoSize = coalesce(overrideLogoSize, serviceLogoSize)
+  }
+  if (namedLogo) {
+    const iconSize = getIconSize(String(namedLogo).toLowerCase())
+
+    if (iconSize &amp;&amp; logoSize === 'auto') {
+      logoWidth = (iconSize.width / iconSize.height) * DEFAULT_LOGO_HEIGHT
+    }
+
+    logoSvgBase64 = prepareNamedLogo({
+      name: namedLogo,
+      color: namedLogoColor,
+      size: logoSize,
+      style,
+    })
+  }
+
+  const badgeData = {
+    // Use `coalesce()` to support empty labels and messages, as in the static
+    // badge.
+    label: coalesce(overrideLabel, serviceLabel, defaultLabel, category),
+    message: coalesce(serviceMessage, 'n/a'),
+    color: coalesce(
+      // In case of an error, disregard user's color override.
+      isError ? undefined : overrideColor,
+      serviceColor,
+      defaultColor,
+      'lightgrey',
+    ),
+    labelColor: coalesce(
+      // In case of an error, disregard user's color override.
+      isError ? undefined : overrideLabelColor,
+      serviceLabelColor,
+      defaultLabelColor,
+    ),
+    style,
+    namedLogo,
+    logo: logoSvgBase64,
+    logoWidth,
+    logoSize,
+    links: toArray(overrideLink || serviceLink),
+    cacheLengthSeconds: coalesce(serviceCacheSeconds, defaultCacheSeconds),
+  }
+  badgeData.label =
+    typeof badgeData.label === 'string'
+      ? badgeData.label.slice(0, 255)
+      : badgeData.label
+  badgeData.message =
+    typeof badgeData.message === 'string'
+      ? badgeData.message.slice(0, 255)
+      : badgeData.message
+  return badgeData
+}
+</code></pre>
+        </article>
+    </section>
 
 
 
