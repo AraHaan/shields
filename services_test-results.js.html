@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: services/package-json-helpers</title>
+    <title>JSDoc: Source: services/test-results.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,632 +17,172 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: services/package-json-helpers</h1>
-
-    
-
-
-
-
-<section>
-
-<header>
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>Common functions and utilities for tasks related to package.json</p></div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_package-json-helpers.js.html">services/package-json-helpers.js</a>, <a href="services_package-json-helpers.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<h4 class="name" id="~isDependencyMap"><span class="type-signature">(inner, constant) </span>isDependencyMap<span class="type-signature"> :Joi</span></h4>
-
-
-
-
-<div class="description">
-    <p>Joi schema for validating dependency map.</p>
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Joi</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_package-json-helpers.js.html">services/package-json-helpers.js</a>, <a href="services_package-json-helpers.js.html#line15">line 15</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="~isPackageJsonWithDependencies"><span class="type-signature">(inner, constant) </span>isPackageJsonWithDependencies<span class="type-signature"> :Joi</span></h4>
-
-
-
-
-<div class="description">
-    <p>Joi schema for validating package json object.
-Checks if the object has all the dependency types and the dependency types are valid.</p>
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Joi</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_package-json-helpers.js.html">services/package-json-helpers.js</a>, <a href="services_package-json-helpers.js.html#line29">line 29</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~getDependencyVersion"><span class="type-signature">(inner) </span>getDependencyVersion<span class="signature">(attrs)</span><span class="type-signature"> &rarr; {string}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Determines the dependency version based on the dependency type.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>attrs</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Refer to individual attributes</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>kind</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Wanted dependency type, defaults to prod</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>wantedDependency</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Name of the wanted dependency</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>dependencies</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Map of dependencies</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>devDependencies</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Map of dev dependencies</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>peerDependencies</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Map of peer dependencies</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>optionalDependencies</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Map of optional dependencies</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_package-json-helpers.js.html">services/package-json-helpers.js</a>, <a href="services_package-json-helpers.js.html#line50">line 50</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Throws:</h5>
-<ul>
-        <li>
-
-<dl>
-    <dt>
-        <div class="param-desc">
-        <ul>
-<li>Error message if unknown dependency type provided</li>
-</ul>
-        </div>
-    </dt>
-    <dd></dd>
-    <dt>
-        <dl>
-            <dt>
-                Type
-            </dt>
-            <dd>
-                
-<span class="param-type">string</span>
-
-
-            </dd>
-        </dl>
-    </dt>
-    <dd></dd>
-</dl>
-
-</li>
-    
-        <li>
-
-<dl>
-    <dt>
-        <div class="param-desc">
-        <ul>
-<li>Error if wanted dependency is not present</li>
-</ul>
-        </div>
-    </dt>
-    <dd></dd>
-    <dt>
-        <dl>
-            <dt>
-                Type
-            </dt>
-            <dd>
-                
-<span class="param-type">InvalidParameter</span>
-
-
-            </dd>
-        </dl>
-    </dt>
-    <dd></dd>
-</dl>
-
-</li>
-    </ul>
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>Semver range of the wanted dependency (eg. ~2.1.6 or &gt;=3.0.0 or &lt;4.0.0)</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <h1 class="page-title">Source: services/test-results.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Helpers for formatting test-result badge messages and colors.
+ *
+ * @module
+ */
+
+import Joi from 'joi'
+import { queryParams } from './index.js'
+
+const testResultQueryParamSchema = Joi.object({
+  compact_message: Joi.equal(''),
+  passed_label: Joi.string(),
+  failed_label: Joi.string(),
+  skipped_label: Joi.string(),
+}).required()
+
+const testResultOpenApiQueryParams = queryParams(
+  {
+    name: 'compact_message',
+    example: null,
+    schema: { type: 'boolean' },
+  },
+  { name: 'passed_label', example: 'good' },
+  { name: 'failed_label', example: 'bad' },
+  { name: 'skipped_label', example: 'n/a' },
+)
+
+/**
+ * Format test counts into a badge message string.
+ *
+ * @param {object} attrs Refer to individual attrs
+ * @param {number} attrs.passed Number of passing tests.
+ * @param {number} attrs.failed Number of failing tests.
+ * @param {number} attrs.skipped Number of skipped tests.
+ * @param {number} attrs.total Total number of tests.
+ * @param {string} [attrs.passedLabel] Label for passing tests in verbose mode.
+ * @param {string} [attrs.failedLabel] Label for failing tests in verbose mode.
+ * @param {string} [attrs.skippedLabel] Label for skipped tests in verbose mode.
+ * @param {boolean} [attrs.isCompact] When true, use compact symbols separated by ` | `.
+ * @returns {string} Formatted message, or `no tests` when total is zero.
+ */
+function renderTestResultMessage({
+  passed,
+  failed,
+  skipped,
+  total,
+  passedLabel,
+  failedLabel,
+  skippedLabel,
+  isCompact,
+}) {
+  const labels = { passedLabel, failedLabel, skippedLabel }
+  if (total === 0) {
+    return 'no tests'
+  } else if (isCompact) {
+    ;({ passedLabel = '✔', failedLabel = '✘', skippedLabel = '➟' } = labels)
+    return [
+      `${passedLabel} ${passed}`,
+      failed > 0 &amp;&amp; `${failedLabel} ${failed}`,
+      skipped > 0 &amp;&amp; `${skippedLabel} ${skipped}`,
+    ]
+      .filter(Boolean)
+      .join(' | ')
+  } else {
+    ;({
+      passedLabel = 'passed',
+      failedLabel = 'failed',
+      skippedLabel = 'skipped',
+    } = labels)
+    return [
+      `${passed} ${passedLabel}`,
+      failed > 0 &amp;&amp; `${failed} ${failedLabel}`,
+      skipped > 0 &amp;&amp; `${skipped} ${skippedLabel}`,
+    ]
+      .filter(Boolean)
+      .join(', ')
+  }
+}
+
+/**
+ * Render badge data for a test result summary.
+ *
+ * Chooses badge color from pass/fail/skip counts and delegates message formatting
+ * to {@link renderTestResultMessage}.
+ *
+ * @param {object} attrs Refer to individual attrs
+ * @param {number} attrs.passed Number of passing tests.
+ * @param {number} attrs.failed Number of failing tests.
+ * @param {number} attrs.skipped Number of skipped tests.
+ * @param {number} attrs.total Total number of tests.
+ * @param {string} [attrs.passedLabel] Label for passing tests in verbose mode.
+ * @param {string} [attrs.failedLabel] Label for failing tests in verbose mode.
+ * @param {string} [attrs.skippedLabel] Label for skipped tests in verbose mode.
+ * @param {boolean} [attrs.isCompact] When true, use compact symbols in the message.
+ * @returns {{message: string, color: string}} Badge message and shields color name.
+ */
+function renderTestResultBadge({
+  passed,
+  failed,
+  skipped,
+  total,
+  passedLabel,
+  failedLabel,
+  skippedLabel,
+  isCompact,
+}) {
+  const message = renderTestResultMessage({
+    passed,
+    failed,
+    skipped,
+    total,
+    passedLabel,
+    failedLabel,
+    skippedLabel,
+    isCompact,
+  })
+
+  let color
+  if (total === 0) {
+    color = 'yellow'
+  } else if (failed > 0) {
+    color = 'red'
+  } else if (skipped > 0 &amp;&amp; passed > 0) {
+    color = 'green'
+  } else if (skipped > 0) {
+    color = 'yellow'
+  } else {
+    color = 'brightgreen'
+  }
+
+  return { message, color }
+}
+
+const documentation = `
+You may change the "passed", "failed" and "skipped" text on this badge by supplying query parameters &lt;code>&amp;passed_label=&lt;/code>, &lt;code>&amp;failed_label=&lt;/code> and &lt;code>&amp;skipped_label=&lt;/code> respectively.
+
+For example, if you want to use a different terminology:
+
+\`?passed_label=good&amp;failed_label=bad&amp;skipped_label=n%2Fa\`
+
+Or symbols:
+
+\`?compact_message&amp;passed_label=💃&amp;failed_label=🤦‍♀️&amp;skipped_label=🤷\`
+
+There is also a &lt;code>&amp;compact_message&lt;/code> query parameter, which will default to displaying ✔, ✘ and ➟, separated by a horizontal bar |.
+`
+
+export {
+  testResultQueryParamSchema,
+  testResultOpenApiQueryParams,
+  renderTestResultMessage,
+  renderTestResultBadge,
+  documentation,
+}
+</code></pre>
+        </article>
+    </section>
 
 
 
