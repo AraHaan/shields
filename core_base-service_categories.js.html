@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: ShieldsRuntimeError</title>
+    <title>JSDoc: Source: core/base-service/categories.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,360 +17,52 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: ShieldsRuntimeError</h1>
-
-    
-
-
-
-
-<section>
-
-<header>
-    
-        <h2><span class="attribs"><span class="type-signature">(abstract) </span></span>
-            <span class="ancestors"><a href="module-core_base-service_errors.html">core/base-service/errors</a>~</span>ShieldsRuntimeError<span class="signature">(props, message)</span><span class="type-signature"></span></h2>
-        
-            <div class="class-description"><p>Base error class</p></div>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-    
-    <h2>Constructor</h2>
-    
-
-    
-    <h4 class="name" id="ShieldsRuntimeError"><span class="type-signature">(abstract) </span>new ShieldsRuntimeError<span class="signature">(props, message)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>props</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">RuntimeErrorProps</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Refer to individual attrs</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>message</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Exception message for debug purposes</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_base-service_errors.js.html">core/base-service/errors.js</a>, <a href="core_base-service_errors.js.html#line12">line 12</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<h4 class="name" id="defaultPrettyMessage"><span class="type-signature">(abstract) </span>defaultPrettyMessage<span class="type-signature"> :string</span></h4>
-
-
-
-
-<div class="description">
-    <p>Default message for this exception if none is specified.
-Implementations of ShieldsRuntimeError should implement this method.</p>
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">string</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_base-service_errors.js.html">core/base-service/errors.js</a>, <a href="core_base-service_errors.js.html#line30">line 30</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="name"><span class="type-signature"></span>name<span class="type-signature"> :string</span></h4>
-
-
-
-
-<div class="description">
-    <p>Name of the class. Implementations of ShieldsRuntimeError
-should override this method.</p>
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">string</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_base-service_errors.js.html">core/base-service/errors.js</a>, <a href="core_base-service_errors.js.html#line19">line 19</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <h1 class="page-title">Source: core/base-service/categories.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Helpers for validating service category identifiers.
+ *
+ * @module
+ */
+
+import Joi from 'joi'
+import categories from '../../services/categories.js'
+
+const isRealCategory = Joi.equal(...categories.map(({ id }) => id)).required()
+
+/**
+ * Joi validator for service categories registered by Shields, including the
+ * special `debug`, `dynamic`, and `static` categories.
+ *
+ * @type {Joi}
+ */
+const isValidCategory = Joi.alternatives()
+  .try(isRealCategory, Joi.equal('debug', 'dynamic', 'static').required())
+  .required()
+
+/**
+ * Assert that a value is a valid Shields service category.
+ *
+ * @param {string} category - Service category identifier to validate.
+ * @param {string} [message] - Optional prefix for the validation error.
+ * @throws {Error} When the category is not recognized.
+ * @returns {void}
+ */
+function assertValidCategory(category, message = undefined) {
+  Joi.assert(category, isValidCategory, message)
+}
+
+export { isValidCategory, assertValidCategory }
+</code></pre>
+        </article>
+    </section>
 
 
 
